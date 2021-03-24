@@ -85,25 +85,30 @@ void GraphicsComponent::registerConstructor(
 void GraphicsComponent::update(CapEngine::GameObject&, double) {}
 
 //! @copydoc CapEngine::GraphicsComponent::render
-void GraphicsComponent::render(CapEngine::GameObject &in_object, const CapEngine::Camera2d &in_camera, uint32_t in_windowId)
+void GraphicsComponent::render(CapEngine::GameObject &in_object,
+                               const CapEngine::Camera2d &in_camera,
+                               uint32_t in_windowId)
 {
-  const auto objectRect = in_object.boundingPolygon();
-  const auto doYFlip =
-	in_object.getYAxisOrientation() == CapEngine::YAxisOrientation::BottomZero;
+    const auto objectRect = in_object.boundingPolygon();
+    const auto doYFlip = in_object.getYAxisOrientation() ==
+                         CapEngine::YAxisOrientation::BottomZero;
 
-  CapEngine::Rectangle drawRect =
-	  toScreenCoords(in_camera, objectRect, in_windowId, doYFlip);
+    CapEngine::Rectangle drawRect =
+        toScreenCoords(in_camera, objectRect, in_windowId, doYFlip);
 
-  assert(CapEngine::Locator::videoManager != nullptr);
+    assert(CapEngine::Locator::videoManager != nullptr);
 
-  auto *assetManager = CapEngine::Locator::assetManager;
-  const auto srcRect = CapEngine::Rectangle(0, 0, assetManager->getImageHeight(m_spriteAssetId), assetManager->getImageHeight(m_spriteAssetId));
+    auto *assetManager = CapEngine::Locator::assetManager;
+    const auto srcRect = CapEngine::Rectangle(
+        0, 0, assetManager->getImageHeight(m_spriteAssetId),
+        assetManager->getImageHeight(m_spriteAssetId));
 
-  // calculate any rotation of the sprite depending on the angle.
-  const auto& orientation = in_object.getOrientation();
-  const auto angle = (-1) * RADTODEG(atan2(orientation.getY(), orientation.getX()));
+    // calculate any rotation of the sprite depending on the angle.
+    const auto &orientation = in_object.getOrientation();
+    const auto angle = (-1) * RADTODEG(orientation.angle2d());
 
-  CapEngine::Locator::assetManager->draw(in_windowId, m_spriteAssetId, srcRect, drawRect, angle);
+    CapEngine::Locator::assetManager->draw(in_windowId, m_spriteAssetId,
+                                           srcRect, drawRect, angle);
 }
 
 } // namespace Tanks

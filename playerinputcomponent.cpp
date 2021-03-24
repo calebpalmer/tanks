@@ -1,7 +1,5 @@
 #include "playerinputcomponent.h"
 
-#include "projectilephysicscomponent.h"
-
 #include "CapEngineException.h"
 #include "SDL_keycode.h"
 #include "capengine/eventsubscriber.h"
@@ -18,27 +16,6 @@
 
 namespace Tanks
 {
-
-namespace
-{
-
-std::unique_ptr<CapEngine::GameObject>
-    makeProjectile(CapEngine::Vector in_position, CapEngine::Vector in_velocity)
-{
-    auto gameObject = std::make_unique<CapEngine::GameObject>();
-    gameObject->setPosition(in_position);
-    gameObject->setVelocity(in_velocity);
-
-    gameObject->addComponent(
-        std::make_unique<ProjectilePhysicsComponent>(2, 2, in_velocity));
-
-    gameObject->addComponent(std::make_unique<CapEngine::PlaceHolderGraphics>(
-        2, 2, CapEngine::Colour{255, 0, 0, 255}));
-
-    return gameObject;
-}
-
-} // namespace
 
 PlayerInputComponent::PlayerInputComponent()
 {
@@ -100,22 +77,7 @@ void PlayerInputComponent::update(CapEngine::GameObject &in_object,
     in_object.setForce(force);
 
     if (m_doFire) {
-        auto maybeObjectManager = CapEngine::Locator::locate(
-            CapEngine::ObjectManager::kObjectManagerLocatorId);
-        CAP_THROW_ASSERT(maybeObjectManager.has_value(),
-                         "ObjectManager not found.");
-
-        auto *objectManager =
-            std::any_cast<std::shared_ptr<CapEngine::ObjectManager>>(
-                &maybeObjectManager);
-        CAP_THROW_ASSERT(objectManager != nullptr, "ObjectManager not found.");
-
-        const auto speed = double{200};
-        (*objectManager)
-            ->addObject(
-                makeProjectile(in_object.getPosition(),
-                               in_object.getOrientation().normalize() * speed));
-
+        in_object.send(0, "Fire");
         m_doFire = false;
     }
 }
