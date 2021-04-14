@@ -10,6 +10,14 @@
     <!-- sprites -->
     <texture id="1000">images/tank.png</texture>
 
+    <!-- Menu -->
+    <texture id="2000">textures/logo.png</texture>
+
   </textures>
+
+  <sounds>
+    <!-- music -->
+    <sound id="1000">sound/music/cartoon_theme.ogg</sound>
+  </sounds>
 
 </assets>

@@ -2,13 +2,15 @@
 
 #include "graphicscomponent.h"
 #include "playerinputcomponent.h"
-#include "tankphysicscomponent.h"
 #include "projectilephysicscomponent.h"
+#include "startmenustate.h"
+#include "tankphysicscomponent.h"
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <jsoncons/json.hpp>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -42,15 +44,19 @@ int main()
             componentFactory);
 
         // load the scenes
-        const std::string sceneFile = "res/scenes.json";
-        std::ifstream stream(sceneFile);
-        jsoncons::json scenesJson = jsoncons::json::parse(stream);
+        // const std::string sceneFile = "res/scenes.json";
+        // std::ifstream stream(sceneFile);
+        // jsoncons::json scenesJson = jsoncons::json::parse(stream);
 
-        const std::string sceneId = "demo";
+        // const std::string sceneId = "demo";
 
-        auto pScene2dState = std::make_unique<CapEngine::Scene2dState>(
-            scenesJson, sceneId, windowId);
-        CapEngine::startLoop(std::move(pScene2dState));
+        // auto pScene2dState = std::make_unique<CapEngine::Scene2dState>(
+        //     scenesJson, sceneId, windowId);
+        // CapEngine::startLoop(std::move(pScene2dState));
+
+        auto pStartMenuState =
+            std::make_unique<Tanks::StartMenuState>(windowId);
+        CapEngine::startLoop(std::move(pStartMenuState));
 
         return EXIT_SUCCESS;
     }
