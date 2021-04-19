@@ -6,9 +6,15 @@ pipeline {
     }
 
     stages {
-	stage('Test') {
+	stage('3rd Party Libs') {
 	    steps {
-		sh 'echo hello'
+		script {
+		    sh """
+			mkdir build
+			cd build
+			conan install .. --build missing
+			"""
+		}
 	    }
 	}
     }
