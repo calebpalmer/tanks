@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 
-RUN apt update && apt install -y \
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
     cmake \
     build-essential \
     ninja-build \
