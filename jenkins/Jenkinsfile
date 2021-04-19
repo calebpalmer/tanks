@@ -6,7 +6,7 @@ pipeline {
 	}
     }
 
-    env {
+    environment {
        CONAN_USER_HOME = '/data/.conan'
     }
 
