@@ -6,12 +6,14 @@ pipeline {
 	}
     }
 
+    env {
+       CONAN_USER_HOME = '/data/.conan'
+    }
+
+
     stages {
 	stage('3rd Party Libs') {
 	    steps {
-		env {
-		    CONAN_USER_HOME = '/data/.conan'
-		}
 		script {
 		    sh """
 			mkdir build || true
