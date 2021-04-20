@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     clang-11 \
     cmake \
     build-essential \
+    libasound2-dev \
     ninja-build \
     pkg-config \
     python3 \
