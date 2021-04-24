@@ -1,0 +1,3 @@
+[submodule "capengine"]
+	path = capengine
+	url = git@github.com:calebpalmer/capengine.git
