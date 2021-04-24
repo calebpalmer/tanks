@@ -24,5 +24,17 @@ pipeline {
 		}
 	    }
 	}
+
+	stage('Build') {
+	    steps {
+		script {
+		    sh """
+		       ./configure.sh build RelWithDebInfo
+		       cmake --build build
+		       cmake --build build --target install
+		    """
+		}
+	    }
+	}
     }
 }
