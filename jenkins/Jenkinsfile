@@ -29,6 +29,9 @@ pipeline {
 	    steps {
 		script {
 		    sh """
+		       pwd
+		       ls -la
+		       ls -la build
 		       ./configure.sh build RelWithDebInfo
 		       cmake --build build
 		       cmake --build build --target install
