@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libjack-dev \
     libasound2-dev \
-    libegl-mesa-dev \
     libpulse-dev \
+    mesa-common-dev \
     ninja-build \
     pkg-config \
     python3 \
