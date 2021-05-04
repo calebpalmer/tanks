@@ -2,7 +2,7 @@ pipeline {
     agent {
 	dockerfile {
 	    dir 'jenkins'
-	    args '-v /tmp:/data'
+	    args '-v /tmp:/data --cpus 4'
 	}
     }
 
