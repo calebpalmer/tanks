@@ -10,6 +10,9 @@
 (setq cap/install-dir (concat cap/build-dir "/install"))
 (setq cap/ld-library-path (concat "LD_LIBRARY_PATH=" cap/install-dir))
 
+(setq projectile-project-root cap/source_root_dir)
+(setq projectile-git-command "cat <(git ls-files -zco --exclude-standard) <(git --no-pager submodule --quiet foreach 'git ls-files --full-name -co --exclude-standard | sed s!^!$path/!')")
+
 ;; create initial build dir
 (if (equal (file-directory-p cap/build-dir) nil)
     (progn

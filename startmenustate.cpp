@@ -1,5 +1,7 @@
 #include "startmenustate.h"
+#include "CapEngineException.h"
 #include "assets.h"
+#include "pausestate.h"
 
 #include "capengine/button.h"
 #include "capengine/button_group.h"
@@ -10,6 +12,7 @@
 #include "capengine/locator.h"
 #include "capengine/scene2dstate.h"
 #include "capengine/textbutton.h"
+#include "keyboard.h"
 
 #include <fstream>
 #include <iostream>
@@ -137,7 +140,21 @@ void StartMenuState::update(double ms)
             scenesJson, sceneId, m_windowId);
 
         pScene2dState->setEndSceneCB([]() { CapEngine::popState(); });
-
+        pScene2dState->addUpdateCB([windowId = m_windowId,
+                                    pausePressed = std::make_shared<bool>(
+                                        false)](double /*ms*/) {
+            using namespace CapEngine;
+            CAP_THROW_ASSERT(Locator::keyboard != nullptr, "keyboard is null.")
+            if (CapEngine::Locator::keyboard->key(Keyboard::CAP_ESCAPE).state ==
+                Keyboard::CAP_PRESSED) {
+                *pausePressed = true;
+            } else if (CapEngine::Locator::keyboard->key(Keyboard::CAP_ESCAPE)
+                               .state == Keyboard::CAP_UNPRESSED &&
+                       *pausePressed == true) {
+                // pause
+                pushState(std::make_shared<PauseState>(windowId));
+            }
+        });
         CapEngine::pushState(std::move(pScene2dState));
     }
 }

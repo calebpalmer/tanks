@@ -32,20 +32,20 @@ void PauseState::render()
     }
 }
 
-void PauseState::update(double ms)
+void PauseState::update(double /*ms*/)
 {
-    for (auto &i : m_uiObjects) {
+    for (auto &&i : m_uiObjects) {
         i->update();
     }
 
     if (!m_escapePressed &&
-        CapEngine::Locator::keyboard->keyMap[CapEngine::Keyboard::CAP_ESCAPE]
+        CapEngine::Locator::keyboard->key(CapEngine::Keyboard::CAP_ESCAPE)
                 .state == CapEngine::Keyboard::CAP_PRESSED) {
         m_escapePressed = true;
     }
 
     if (m_escapePressed &&
-        CapEngine::Locator::keyboard->keyMap[CapEngine::Keyboard::CAP_ESCAPE]
+        CapEngine::Locator::keyboard->key(CapEngine::Keyboard::CAP_ESCAPE)
                 .state == CapEngine::Keyboard::CAP_UNPRESSED) {
         CapEngine::popState();
         return;
@@ -72,9 +72,9 @@ bool PauseState::onLoad()
     unique_ptr<CapEngine::TextButton> pResumeButton(
         new CapEngine::TextButton(m_windowID, "Resume", "res/fonts/tahoma.ttf",
                                   40, CapEngine::Vector(0, 0)));
-    unique_ptr<CapEngine::TextButton> pMainMenuButton(
-        new CapEngine::Button(m_windowID, "Main Menu", "res/fonts/tahoma.ttf",
-                              40, CapEngine::Vector(0, 0)));
+    unique_ptr<CapEngine::TextButton> pMainMenuButton(new CapEngine::TextButton(
+        m_windowID, "Main Menu", "res/fonts/tahoma.ttf", 40,
+        CapEngine::Vector(0, 0)));
     int numItems = 2;
     int xres, yres;
     CapEngine::Locator::videoManager->getWindowResolution(m_windowID, &xres,
@@ -94,7 +94,8 @@ bool PauseState::onLoad()
     pResumeButton->registerCallback(this->resumeCallback, this);
     pMainMenuButton->registerCallback(this->returnToMenuCallback, this);
 
-    unique_ptr<ButtonGroup> pButtonGroup(new ButtonGroup());
+    unique_ptr<CapEngine::ButtonGroup> pButtonGroup(
+        new CapEngine::ButtonGroup());
     pButtonGroup->addButton(std::move(pResumeButton));
     pButtonGroup->addButton(std::move(pMainMenuButton));
 
