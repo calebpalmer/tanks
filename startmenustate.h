@@ -20,6 +20,8 @@ class StartMenuState : public CapEngine::GameState
     virtual void update(double ms) override; // GameState
     virtual bool onLoad() override;          // GameState
     virtual bool onDestroy() override;       // GameState
+    virtual bool onPause() override;         // GameState
+    virtual bool onResume() override;        // GaneState
 
   protected:
     StartMenuState(const StartMenuState &);

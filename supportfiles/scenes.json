@@ -1,86 +1,139 @@
 {
     "scenes": [{
-	"id": "demo",
-	"width": 600,
-	"height": 400,
-	"layers": [{
-		"type": "ImageLayer",
-		"asset_id": 1,
-		"order": 1,
-		"position": {
-		    "x": 0,
-		    "y": 0,
-		    "width": 600,
-		    "height": 400
-		}
-	    },
-	    {
-		"type": "BitmapCollisionLayer",
-		"asset_id": 2,
-		"order": 2,
-		"position": {
-		    "x": 0,
-		    "y": 0,
-		    "width": 600,
-		    "height": 400
-		}
-	    }
-	],
-	"objects": [{
-	    "position": {
-		"x": 100,
-		"y": 100
-	    },
-	    "components": [
-		//graphics
-		// {
-		//     "type": "Graphics",
-		//     "subtype": "PlaceHolderGraphics",
-		//     "width": 32,
-		//     "height": 32,
-		//     "colour": {
-		//         "r": 255,
-		//         "g": 0,
-		//         "b": 0,
-		//         "a": 128
-		//     }
-		// },
-		{
-		    "type": "Graphics",
-		    "subtype": "TanksPlayerGraphicsComponent",
-		    "spriteAssetId": 1000,
-		    "defaultOrientation": {
-			"x": 0.0,
-			"y": 0.0,
-			"z": 0.0
-		    }
-		},
-		//box collider
-		{
-		    "type": "Physics",
-		    "subtype": "BoxCollider",
-		    "box": {
-			"x": 100,
-			"y": 100,
-			"width": 32,
-			"height": 32
-		    }
-		},
-		// physics
-		{
-		    "type": "Physics",
-		    "subtype": "TankPhysicsComponent",
-		    "projectileOffset": {
-			"x": 0,
-			"y": 14
-		    }
-		},
-		// input
-		{
-		    "type": "Input",
-		    "subtype": "PlayerInputComponent"
-		}
-	    ]
-	}]
+        "id": "demo",
+        "width": 600,
+        "height": 400,
+        "layers": [{
+                "type": "ImageLayer",
+                "asset_id": 1,
+                "order": 1,
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 600,
+                    "height": 400
+                }
+            },
+            {
+                "type": "BitmapCollisionLayer",
+                "asset_id": 2,
+                "order": 2,
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 600,
+                    "height": 400
+                }
+            }
+        ],
+        "objects": [{
+                "position": {
+                    "x": 100,
+                    "y": 100
+                },
+                "metadata": {
+                    "player": 1
+                },
+                "components": [{
+                        "type": "Graphics",
+                        "subtype": "TanksPlayerGraphicsComponent",
+                        "metadata": {
+                            "player": 1
+                        },
+                        "spriteAssetId": 1000,
+                        "defaultOrientation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "type": "Physics",
+                        "subtype": "BoxCollider",
+                        "metadata": {
+                            "player": 1
+                        },
+                        "box": {
+                            "x": 100,
+                            "y": 100,
+                            "width": 32,
+                            "height": 32
+                        }
+                    },
+                    {
+                        "type": "Physics",
+                        "subtype": "TankPhysicsComponent",
+                        "metadata": {
+                            "player": 1
+                        },
+                        "projectileOffset": {
+                            "x": 0,
+                            "y": 14
+                        }
+                    },
+                    {
+                        "type": "Input",
+                        "subtype": "PlayerInputComponent",
+                        "metadata": {
+                            "player": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "position": {
+                    "x": 500,
+                    "y": 100
+                },
+                "metadata": {
+                    "player": 2
+                },
+                "components": [{
+                        "type": "Graphics",
+                        "subtype": "TanksPlayerGraphicsComponent",
+                        "metadata": {
+                            "player": 2
+                        },
+                        "spriteAssetId": 1001,
+                        "defaultOrientation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "type": "Physics",
+                        "subtype": "BoxCollider",
+                        "metadata": {
+                            "player": 2
+                        },
+                        "box": {
+                            "x": 500,
+                            "y": 100,
+                            "width": 32,
+                            "height": 32
+                        }
+                    },
+                    {
+                        "type": "Physics",
+                        "subtype": "TankPhysicsComponent",
+                        "metadata": {
+                            "player": 2
+                        },
+                        "projectileOffset": {
+                            "x": 0,
+                            "y": 14
+                        }
+                    },
+                    {
+                        "type": "Input",
+                        "subtype": "PlayerInputComponent",
+                        "metadata": {
+                            "player": 2
+                        }
+                    }
+                ]
+            }
+        ]
     }]
 }

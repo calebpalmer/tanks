@@ -18,6 +18,8 @@ class PauseState : public CapEngine::GameState
     virtual void update(double ms);
     virtual bool onLoad();
     virtual bool onDestroy();
+    virtual bool onPause() override;
+    virtual bool onResume() override;
 
     static void returnToMenuCallback(void *context);
     static void resumeCallback(void *context);

@@ -28,14 +28,14 @@
 (defun tanks/launch-nodebug ()
   (interactive)
   (progn
-    ;;(cap/cmake-install)
-    (async-shell-command
-     (concat "cd " cap/bin-dir " && " cap/ld-library-path " gdb -q -batch -ex 'run' -ex 'thread apply all backtrace' --args tanks") "*tanks-run*")))
+    (shell-command (concat "cmake --build " cap/build-dir " --target copy"))
+    (let ((default-directory (concat cap/build-dir "/bin")))
+	  (async-shell-command "gdb -q -batch -ex 'run' -ex 'thread apply all backtrace' --args tanks") "*tanks-run*")))
 
 (defun tanks/launch-debug ()
   (interactive)
   (progn
-    ;;(cap/cmake-install)
+    (shell-command (concat "cmake --build " cap/build-dir " --target copy"))
     (setenv "LD_LIBRARY_PATH" cap/install-dir)
     (gdb (concat "gdb -i=mi --cd " cap/bin-dir " --args tanks"))
     ))

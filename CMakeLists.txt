@@ -3,12 +3,15 @@ project(tanks)
 
 include(GNUInstallDirs)
 
+#set( CMAKE_VERBOSE_MAKEFILE on )
+
 add_subdirectory(capengine)
 add_subdirectory(supportfiles)
 
 if (MSVC)
   add_compile_options(/W4)
 else()
+  #add_compile_options(-ggdb3 -Wall -Wextra -Wpedantic -Wno-reorder -Wno-unused -std=c++17)
   add_compile_options(-ggdb3 -Wall -Wextra -Wpedantic -Wno-reorder -Wno-unused -std=c++17 -fsanitize=address -fno-omit-frame-pointer)
   add_link_options(-fsanitize=address)
 endif()
@@ -52,6 +55,17 @@ file(COPY supportfiles/assets.xml DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
 file(COPY supportfiles/scenes.json DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
 install(DIRECTORY assets/res/images DESTINATION ./res)
 
+# add target for support files
+file(GLOB ConfigFiles ${CMAKE_SOURCE_DIR}/assets/res/* ${CMAKE_SOURCE_DIR}/supportfiles/*)
+add_custom_target(copy)
+foreach(ConfigFile ${ConfigFiles})
+  add_custom_command(TARGET copy PRE_BUILD
+		     COMMAND ${CMAKE_COMMAND} -E
+		     copy ${ConfigFile} ${CMAKE_BINARY_DIR}/bin/res)
+endforeach()
+add_dependencies(tanks copy)
+
+
 install(
   TARGETS tanks capengine
   DESTINATION ./)
@@ -59,11 +73,3 @@ install(
 install(FILES scripts/tanks.sh
   DESTINATION ./
   PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE)
-
-# set(MY_BINARY_LOCATION $<TARGET_FILE:tanks> CACHE STRING "")
-# FILE(
-#    GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake"
-#    INPUT "${CMAKE_CURRENT_SOURCE_DIR}/dependencies.cmake.in"
-#    )
-
-# INSTALL(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake")

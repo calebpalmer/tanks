@@ -43,17 +43,6 @@ int main()
         Tanks::ProjectilePhysicsComponent::registerConstructor(
             componentFactory);
 
-        // load the scenes
-        // const std::string sceneFile = "res/scenes.json";
-        // std::ifstream stream(sceneFile);
-        // jsoncons::json scenesJson = jsoncons::json::parse(stream);
-
-        // const std::string sceneId = "demo";
-
-        // auto pScene2dState = std::make_unique<CapEngine::Scene2dState>(
-        //     scenesJson, sceneId, windowId);
-        // CapEngine::startLoop(std::move(pScene2dState));
-
         auto pStartMenuState =
             std::make_unique<Tanks::StartMenuState>(windowId);
         CapEngine::startLoop(std::move(pStartMenuState));

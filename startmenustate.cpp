@@ -51,7 +51,7 @@ bool StartMenuState::onLoad()
     std::unique_ptr<CapEngine::ButtonGroup> pButtonGroup(
         new CapEngine::ButtonGroup);
 
-    //  button
+    //  play button
     std::unique_ptr<CapEngine::TextButton> pPlayButton(
         new CapEngine::TextButton(m_windowId, "Play", fontDir.str(), 30,
                                   CapEngine::Vector{}, buttonInactiveColour,
@@ -59,7 +59,6 @@ bool StartMenuState::onLoad()
     pPlayButton->setPosition(CapEngine::Vector(
         (windowLogicalWidth / 2) - (pPlayButton->getWidth() / 2), 200, 0.0));
     pPlayButton->setIndicator("res/textures/turtle_shell.png");
-    // pPlayButton->registerCallback(&playButtonCallback, this);
     pPlayButton->registerCallback([this]() { this->m_startNewGame = true; });
 
     // quit button
@@ -93,6 +92,24 @@ bool StartMenuState::onLoad()
 bool StartMenuState::onDestroy()
 {
     // CapEngine::Locator::assetManager->stopSound(m_soundId);
+    return true;
+}
+
+// \copydoc GameState::onPause
+bool StartMenuState::onPause()
+{
+    for (auto &&i : m_uiObjects)
+        i->setEnabled(false);
+
+    return true;
+}
+
+// \copydoc GameState::onResume
+bool StartMenuState::onResume()
+{
+    for (auto &&i : m_uiObjects)
+        i->setEnabled(true);
+
     return true;
 }
 
@@ -139,7 +156,10 @@ void StartMenuState::update(double ms)
         auto pScene2dState = std::make_unique<CapEngine::Scene2dState>(
             scenesJson, sceneId, m_windowId);
 
+        // When the state is done, pop it and return to this state
         pScene2dState->setEndSceneCB([]() { CapEngine::popState(); });
+
+        // add hook to set pause screen if pause button pressed
         pScene2dState->addUpdateCB([windowId = m_windowId,
                                     pausePressed = std::make_shared<bool>(
                                         false)](double /*ms*/) {
@@ -155,6 +175,8 @@ void StartMenuState::update(double ms)
                 pushState(std::make_shared<PauseState>(windowId));
             }
         });
+
+        // start the new game scene state
         CapEngine::pushState(std::move(pScene2dState));
     }
 }

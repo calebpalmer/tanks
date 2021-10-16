@@ -109,6 +109,24 @@ bool PauseState::onLoad()
 
 bool PauseState::onDestroy() { return true; }
 
+// \copydoc GameState::onPause
+bool PauseState::onPause()
+{
+    for (auto &&i : m_uiObjects)
+        i->setEnabled(false);
+
+    return true;
+}
+
+// \copydoc GameState::onResume
+bool PauseState::onResume()
+{
+    for (auto &&i : m_uiObjects)
+        i->setEnabled(true);
+
+    return true;
+}
+
 void PauseState::returnToMenuCallback(void *context)
 {
     reinterpret_cast<PauseState *>(context)->m_switchToMenuState = true;

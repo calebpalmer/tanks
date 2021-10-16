@@ -37,6 +37,7 @@ class PlayerInputComponent : public CapEngine::InputComponent
         m_keyboardInputConnection; //!< The connection to the keybaord input
                                    //!< signal.
     bool m_doFire = false;         //!< Fire command to be run.
+    int m_player = 1;              //!< The player number
 };
 
 } // namespace Tanks
