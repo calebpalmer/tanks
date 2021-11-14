@@ -58,7 +58,6 @@ bool StartMenuState::onLoad()
                                   buttonActiveColour));
     pPlayButton->setPosition(CapEngine::Vector(
         (windowLogicalWidth / 2) - (pPlayButton->getWidth() / 2), 200, 0.0));
-    pPlayButton->setIndicator("res/textures/turtle_shell.png");
     pPlayButton->registerCallback([this]() { this->m_startNewGame = true; });
 
     // quit button
@@ -71,7 +70,6 @@ bool StartMenuState::onLoad()
         pPlayButton->getPosition().getY() + pPlayButton->getHeight() + 20,
         0.0));
 
-    pQuitButton->setIndicator("res/textures/turtle_shell.png");
     pQuitButton->registerCallback([this]() { this->m_exitGame = true; });
 
     // add the buttons to the button group
