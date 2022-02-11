@@ -46,6 +46,7 @@ add_executable(tanks
   projectilephysicscomponent.cpp
   startmenustate.cpp
   pausestate.cpp
+  playercomponent.cpp
   )
 
 target_link_libraries(tanks capengine)

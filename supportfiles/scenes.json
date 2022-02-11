@@ -35,6 +35,12 @@
                     "player": 1
                 },
                 "components": [{
+
+                        "type": "Custom",
+                        "subtype": "PlayerComponent",
+                        "health": 1
+                    },
+                    {
                         "type": "Graphics",
                         "subtype": "TanksPlayerGraphicsComponent",
                         "metadata": {
@@ -89,6 +95,11 @@
                     "player": 2
                 },
                 "components": [{
+
+                        "type": "Custom",
+                        "subtype": "PlayerComponent",
+                        "health": 1
+                    }, {
                         "type": "Graphics",
                         "subtype": "TanksPlayerGraphicsComponent",
                         "metadata": {

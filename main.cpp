@@ -1,6 +1,7 @@
 #include "capengine/CapEngine.h"
 
 #include "graphicscomponent.h"
+#include "playercomponent.h"
 #include "playerinputcomponent.h"
 #include "projectilephysicscomponent.h"
 #include "startmenustate.h"
@@ -42,6 +43,7 @@ int main()
         Tanks::TankPhysicsComponent::registerConstructor(componentFactory);
         Tanks::ProjectilePhysicsComponent::registerConstructor(
             componentFactory);
+        Tanks::PlayerComponent::registerConstructor(componentFactory);
 
         auto pStartMenuState =
             std::make_unique<Tanks::StartMenuState>(windowId);

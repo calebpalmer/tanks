@@ -11,5 +11,6 @@ boost/1.75.0
 cmake
 
 [options]
+cppunit:shared=True
 
 [imports]
