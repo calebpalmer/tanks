@@ -20,6 +20,7 @@ int main()
     try {
         std::cout << "Tanks!" << std::endl;
 
+        // set up the window
         const bool isFullScreen = false;
 
         CapEngine::WindowParams windowParams{
@@ -29,6 +30,7 @@ int main()
         CapEngine::Locator::videoManager->setWindowLogicalResolution(windowId,
                                                                      600, 400);
 
+        // load assets
         const std::string assetFile = "res/assets.xml";
         CapEngine::loadAssetFile(assetFile);
 
@@ -45,6 +47,7 @@ int main()
             componentFactory);
         Tanks::PlayerComponent::registerConstructor(componentFactory);
 
+        // add initial state and start loop
         auto pStartMenuState =
             std::make_unique<Tanks::StartMenuState>(windowId);
         CapEngine::startLoop(std::move(pStartMenuState));

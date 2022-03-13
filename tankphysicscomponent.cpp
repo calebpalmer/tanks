@@ -28,9 +28,12 @@ namespace
 {
 
 std::unique_ptr<CapEngine::GameObject>
-    makeProjectile(CapEngine::Vector in_position, CapEngine::Vector in_velocity)
+    makeProjectile(CapEngine::ObjectID in_parentObjectID,
+                   CapEngine::Vector in_position, CapEngine::Vector in_velocity)
 {
     auto gameObject = std::make_unique<CapEngine::GameObject>();
+
+    gameObject->setParentObjectID(in_parentObjectID);
     gameObject->setPosition(in_position);
     gameObject->setVelocity(in_velocity);
 
@@ -154,8 +157,9 @@ void TankPhysicsComponent::receive(CapEngine::GameObject &in_object,
             translationMatrix * rotationMatrix * m_projectileOffset;
 
         (*objectManager)
-            ->addObject(makeProjectile(
-                position, in_object.getOrientation().normalize() * speed));
+            ->addObject(
+                makeProjectile(in_object.getObjectID(), position,
+                               in_object.getOrientation().normalize() * speed));
     }
 }
 

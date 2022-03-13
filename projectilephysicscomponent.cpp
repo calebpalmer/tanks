@@ -5,6 +5,7 @@
 #include "capengine/scene2dschema.h"
 #include "capengine/scene2dutils.h"
 #include "physics.h"
+#include <optional>
 
 namespace Tanks
 {
@@ -109,10 +110,21 @@ bool ProjectilePhysicsComponent::handleCollision(
     CapEngine::CollisionType in_collisionType,
     CapEngine::CollisionClass in_collisionClass,
     CapEngine::GameObject &in_object,
-    std::optional<CapEngine::GameObject *> in_OtherObject,
+    std::optional<CapEngine::GameObject *> in_otherObject,
     const CapEngine::Vector &collisionLocation)
 {
-    in_object.setObjectState(CapEngine::GameObject::Dead);
+
+    if (in_otherObject == std::nullopt) {
+        in_object.setObjectState(CapEngine::GameObject::Dead);
+    }
+
+    // if the other object is not the parent
+    if (in_otherObject != std::nullopt &&
+        (*in_otherObject)->getObjectID() != in_object.getParentObjectID()) {
+        in_object.setObjectState(CapEngine::GameObject::Dead);
+        (*in_otherObject)->setObjectState(CapEngine::GameObject::Dead);
+    }
+
     return true;
 }
 

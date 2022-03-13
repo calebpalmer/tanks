@@ -3,8 +3,12 @@
   (concat "build/" (system-name))
   )
 
+
 ;; set the default directory
-(setq cap/source_root_dir default-directory)
+;;(setq cap/source_root_dir default-directory)
+;; (setq cap/source_root_dir (file-name-directory buffer-file-name))
+(setq cap/source_root_dir (cap/find-dir-locals-folder))
+
 (setq cap/build-dir (concat cap/source_root_dir (tanks/get-build-path)))
 (setq cap/bin-dir (concat cap/build-dir "/bin"))
 (setq cap/install-dir (concat cap/build-dir "/install"))
@@ -23,7 +27,7 @@
 
 (setq c-default-style "my-cc-style")
 
-(load-file "capengine/init.el")
+(load-file (concat (cap/find-dir-locals-folder) "capengine/init.el"))
 
 (defun tanks/launch-nodebug ()
   (interactive)
@@ -54,5 +58,14 @@
 (global-set-key (kbd "<f5>") 'tanks/launch-debug)
 (global-set-key (kbd "C-S-<f5>") 'gdb-restore-windows)
 
+(dap-register-debug-template
+  "GDB::Run tanks"
+  (list :type "gdb"
+	:request "launch"
+	:name "LLDB::Run"
+	:target "tanks"
+	:cwd (concat cap/build-dir "/bin")
+	;;:env '(("PATH" . (concat  default-directory "/" (tanks/get-build-path) "/bin")))
+	))
 
 (tanks/get-build-path)
