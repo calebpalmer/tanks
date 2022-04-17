@@ -2,9 +2,12 @@
 #define TANKS_GAMEEVENTS_H
 
 #include "capengine/gameevent.h"
+#include "gameobject.h"
 
 namespace Tanks
 {
+
+// class for menu selection events
 class MenuSelectionEvent : public CapEngine::GameEvent
 {
   public:
@@ -17,6 +20,7 @@ class MenuSelectionEvent : public CapEngine::GameEvent
     MenuSelection m_selection;
 };
 
+// class for pause events
 class PauseEvent : public CapEngine::GameEvent
 {
   public:

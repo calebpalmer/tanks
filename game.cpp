@@ -2,6 +2,8 @@
 
 #include "boost/bind/placeholders.hpp"
 #include "capengine/CapEngine.h"
+#include "capengine/game_management.h"
+#include "capengine/gameobject.h"
 #include "gameevents.h"
 #include "graphicscomponent.h"
 #include "pausestate.h"
@@ -115,6 +117,25 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
             m_state = GameState::scene;
             CapEngine::popState();
         }
+    }
+
+    // game state event changed
+    else if (auto gameStateChangedEvent =
+                 dynamic_cast<const CapEngine::GameObjectStateChangedEvent *>(
+                     &in_gameEvent);
+             gameStateChangedEvent != nullptr) {
+        // get the metadata and see if it's a player object
+        CapEngine::GameObject::Metadata const &metadata =
+            gameStateChangedEvent->m_object->metadata();
+
+        if (metadata.find("player") == metadata.end()) {
+            return; // not a player, who cares.
+        }
+
+        CapEngine::MetadataType player = metadata.at("player");
+        const int playerNumber = std::get<int>(player);
+        m_state = GameState::startmenu;
+        CapEngine::popState();
     }
 
     else {

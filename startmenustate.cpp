@@ -120,15 +120,6 @@ void StartMenuState::render()
         m_loaded = true;
     }
 
-    // int textureWidth =
-    //     CapEngine::Locator::assetManager->getImageWidth(TEXTURE_MENU_LOGO);
-    // int textureHeight =
-    //     CapEngine::Locator::assetManager->getImageHeight(TEXTURE_MENU_LOGO);
-    // CapEngine::Rectangle srcRect(0, 0, textureWidth, textureHeight);
-    // CapEngine::Rectangle dstRect(100, 35, 1000, 361);
-    // CapEngine::Locator::assetManager->draw(m_windowId, TEXTURE_MENU_LOGO,
-    //                                        srcRect, dstRect);
-
     // render ui
     for (auto &i : m_uiObjects) {
         i->render();
@@ -142,10 +133,12 @@ void StartMenuState::update(double ms)
         i->update();
     }
     if (m_exitGame) {
+        m_exitGame = false;
         CapEngine::Locator::eventSubscriber->m_gameEventSignal(
             MenuSelectionEvent(MenuSelectionEvent::MenuSelection::Quit));
     }
     if (m_startNewGame) {
+        m_startNewGame = false;
         CapEngine::Locator::eventSubscriber->m_gameEventSignal(
             MenuSelectionEvent(MenuSelectionEvent::MenuSelection::StartGame));
     }
