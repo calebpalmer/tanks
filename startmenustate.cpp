@@ -1,6 +1,7 @@
 #include "startmenustate.h"
 #include "CapEngineException.h"
 #include "assets.h"
+#include "gameevents.h"
 #include "pausestate.h"
 
 #include "capengine/button.h"
@@ -141,41 +142,12 @@ void StartMenuState::update(double ms)
         i->update();
     }
     if (m_exitGame) {
-        CapEngine::end();
+        CapEngine::Locator::eventSubscriber->m_gameEventSignal(
+            MenuSelectionEvent(MenuSelectionEvent::MenuSelection::Quit));
     }
     if (m_startNewGame) {
-        // load the scenes
-        const std::string sceneFile = "res/scenes.json";
-        std::ifstream stream(sceneFile);
-        jsoncons::json scenesJson = jsoncons::json::parse(stream);
-
-        const std::string sceneId = "demo";
-
-        auto pScene2dState = std::make_unique<CapEngine::Scene2dState>(
-            scenesJson, sceneId, m_windowId);
-
-        // When the state is done, pop it and return to this state
-        pScene2dState->setEndSceneCB([]() { CapEngine::popState(); });
-
-        // add hook to set pause screen if pause button pressed
-        pScene2dState->addUpdateCB([windowId = m_windowId,
-                                    pausePressed = std::make_shared<bool>(
-                                        false)](double /*ms*/) {
-            using namespace CapEngine;
-            CAP_THROW_ASSERT(Locator::keyboard != nullptr, "keyboard is null.")
-            if (CapEngine::Locator::keyboard->key(Keyboard::CAP_ESCAPE).state ==
-                Keyboard::CAP_PRESSED) {
-                *pausePressed = true;
-            } else if (CapEngine::Locator::keyboard->key(Keyboard::CAP_ESCAPE)
-                               .state == Keyboard::CAP_UNPRESSED &&
-                       *pausePressed == true) {
-                // pause
-                pushState(std::make_shared<PauseState>(windowId));
-            }
-        });
-
-        // start the new game scene state
-        CapEngine::pushState(std::move(pScene2dState));
+        CapEngine::Locator::eventSubscriber->m_gameEventSignal(
+            MenuSelectionEvent(MenuSelectionEvent::MenuSelection::StartGame));
     }
 }
 

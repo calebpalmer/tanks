@@ -1,4 +1,8 @@
 #include "pausestate.h"
+#include "SDL_events.h"
+#include "SDL_keycode.h"
+#include "gameevent.h"
+#include "gameevents.h"
 #include "startmenustate.h"
 
 #include "capengine/button_group.h"
@@ -37,33 +41,6 @@ void PauseState::update(double /*ms*/)
     for (auto &&i : m_uiObjects) {
         i->update();
     }
-
-    if (!m_escapePressed &&
-        CapEngine::Locator::keyboard->key(CapEngine::Keyboard::CAP_ESCAPE)
-                .state == CapEngine::Keyboard::CAP_PRESSED) {
-        m_escapePressed = true;
-    }
-
-    if (m_escapePressed &&
-        CapEngine::Locator::keyboard->key(CapEngine::Keyboard::CAP_ESCAPE)
-                .state == CapEngine::Keyboard::CAP_UNPRESSED) {
-        CapEngine::popState();
-        return;
-    }
-
-    if (m_switchToMenuState) {
-        m_switchToMenuState = false;
-        unique_ptr<StartMenuState> p_startMenuState(
-            new StartMenuState(m_windowID));
-        CapEngine::switchState(std::move(p_startMenuState));
-        return;
-    }
-
-    if (m_resumePlayState) {
-        m_resumePlayState = false;
-        CapEngine::popState();
-        return;
-    }
 }
 
 bool PauseState::onLoad()
@@ -99,11 +76,24 @@ bool PauseState::onLoad()
     pButtonGroup->addButton(std::move(pResumeButton));
     pButtonGroup->addButton(std::move(pMainMenuButton));
 
-    // m_uiObjects.push_back(std::move(pResumeButton));
-    // m_uiObjects.push_back(std::move(pMainMenuButton));
     m_uiObjects.push_back(std::move(pButtonGroup));
 
-    m_escapePressed = false;
+    m_keyboardConnection =
+        CapEngine::Locator::eventSubscriber->m_keyboardEventSignal.connect(
+            [this](SDL_KeyboardEvent in_keyboardEvent) {
+                if (m_enabled) {
+                    if (in_keyboardEvent.keysym.sym == SDLK_ESCAPE &&
+                        in_keyboardEvent.type == SDL_KEYUP) {
+
+                        std::cout << "Unpause" << std::endl;
+                        assert(CapEngine::Locator::eventSubscriber != nullptr);
+                        CapEngine::Locator::eventSubscriber->m_gameEventSignal(
+                            PauseEvent(false));
+                    }
+                }
+            });
+
+    m_enabled = true;
     return true;
 }
 
@@ -112,6 +102,7 @@ bool PauseState::onDestroy() { return true; }
 // \copydoc GameState::onPause
 bool PauseState::onPause()
 {
+    m_enabled = false;
     for (auto &&i : m_uiObjects)
         i->setEnabled(false);
 
@@ -121,6 +112,7 @@ bool PauseState::onPause()
 // \copydoc GameState::onResume
 bool PauseState::onResume()
 {
+    m_enabled = true;
     for (auto &&i : m_uiObjects)
         i->setEnabled(true);
 
