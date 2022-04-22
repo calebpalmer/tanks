@@ -4,7 +4,9 @@
 #include "capengine/CapEngine.h"
 #include "capengine/game_management.h"
 #include "capengine/gameobject.h"
+#include "capengine/locator.h"
 #include "gameevents.h"
+#include "gameoverstate.h"
 #include "graphicscomponent.h"
 #include "pausestate.h"
 #include "playercomponent.h"
@@ -34,7 +36,7 @@ int Game::start()
         const bool isFullScreen = false;
 
         CapEngine::WindowParams windowParams{
-            "tanks", 1200, 800, 32, isFullScreen, false, false, false, "main"};
+            "tanks", 1280, 720, 32, isFullScreen, false, false, false, "main"};
 
         m_windowId = CapEngine::init(windowParams);
         CapEngine::Locator::videoManager->setWindowLogicalResolution(m_windowId,
@@ -109,12 +111,10 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
         std::cout << "Pause Event received" << std::endl;
 
         if (pauseEvent->m_pause) {
-            m_state = GameState::pause;
             pushState(std::make_shared<PauseState>(m_windowId));
         }
 
         else {
-            m_state = GameState::scene;
             CapEngine::popState();
         }
     }
@@ -134,8 +134,14 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
 
         CapEngine::MetadataType player = metadata.at("player");
         const int playerNumber = std::get<int>(player);
-        m_state = GameState::startmenu;
-        CapEngine::popState();
+
+        int winner = 1;
+        if (playerNumber == 1) {
+            winner = 2;
+        }
+
+        CapEngine::switchState(
+            std::make_shared<GameOverState>(m_windowId, winner));
     }
 
     else {
@@ -145,8 +151,6 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
 
 void Game::startGame()
 {
-    assert(this->m_state == GameState::startmenu);
-
     // load the scenes
     const std::string sceneFile = "res/scenes.json";
     std::ifstream stream(sceneFile);

@@ -49,6 +49,7 @@ add_executable(tanks
   playercomponent.cpp
   gameevents.cpp
   tankscenestate.cpp
+  gameoverstate.cpp
   )
 
 target_link_libraries(tanks capengine)

@@ -8,8 +8,6 @@
 namespace Tanks
 {
 
-enum struct GameState { startmenu, pause, scene, endlevel };
-
 class Game
 {
   public:
@@ -21,7 +19,6 @@ class Game
     void handlePausePressed();
 
     uint32_t m_windowId = 0;
-    GameState m_state = GameState::startmenu;
     boost::signals2::scoped_connection m_gameEventsConnection;
 };
 
