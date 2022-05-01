@@ -63,7 +63,7 @@ install(DIRECTORY assets/res/images DESTINATION ./res)
 file(GLOB ConfigFiles ${CMAKE_SOURCE_DIR}/assets/res/* ${CMAKE_SOURCE_DIR}/supportfiles/*)
 add_custom_target(copy)
 foreach(ConfigFile ${ConfigFiles})
-  add_custom_command(TARGET copy PRE_BUILD
+  add_custom_command(TARGET copy POST_BUILD
 		     COMMAND ${CMAKE_COMMAND} -E
 		     copy ${ConfigFile} ${CMAKE_BINARY_DIR}/bin/res)
 endforeach()

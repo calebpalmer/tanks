@@ -80,6 +80,7 @@ void GameOverState::update(double in_ms)
         m_currentTextWidth =
             m_maxTextWidth * (m_elapsedTime / m_animationLengthMs);
         m_currentTextHeight = m_currentTextWidth * textureRatio;
+
         m_label->setSize(m_currentTextWidth, m_currentTextHeight);
 
         // set the position of the label
@@ -87,8 +88,8 @@ void GameOverState::update(double in_ms)
             CapEngine::Locator::videoManager->getWindowLogicalResolution(
                 m_windowId);
         m_label->setPosition(
-            (windowLogicalWidth / 2.0) - (m_currentTextWidth / 2.0),
-            (windowLogicalHeight / 2.0) - (m_currentTextHeight / 2.0));
+            (windowLogicalWidth / 2) - (m_currentTextWidth / 2),
+            (windowLogicalHeight / 2) - (m_currentTextHeight / 2));
 
         std::cout << CapEngine::Rectangle(m_label->getPosition()) << std::endl;
     }
