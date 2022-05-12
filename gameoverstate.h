@@ -30,7 +30,7 @@ class GameOverState final : public CapEngine::GameState
     unsigned int m_maxTextHeight = 0;
     unsigned int m_currentTextWidth = 0;
     unsigned int m_currentTextHeight = 0;
-    double m_animationLengthMs = 3000;
+    double m_animationLengthMs = 750;
     double m_elapsedTime = 0.0;
     boost::signals2::scoped_connection m_keyboardSignalConnection;
 };

@@ -33,6 +33,9 @@ class TankPhysicsComponent final : public CapEngine::PhysicsComponent
 
     //! offset from center of object for projectiles
     CapEngine::Vector m_projectileOffset = {0.0, 0.0, 0.0};
+
+  private:
+    static constexpr int m_soundId = 2000;
 };
 
 } // namespace Tanks

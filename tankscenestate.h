@@ -17,11 +17,17 @@ class TankSceneState final : public CapEngine::Scene2dState
                    uint32_t in_windowId);
     ~TankSceneState() override = default;
 
+    bool onLoad() override;
+    bool onDestroy() override;
     bool onPause() override;
     bool onResume() override;
 
   private:
+    void startMusic();
+    void stopMusic();
+
     boost::signals2::scoped_connection m_keyboardEventConnection;
+    std::optional<long> m_soundId;
 };
 
 } // namespace Tanks

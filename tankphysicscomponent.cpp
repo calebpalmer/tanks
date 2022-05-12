@@ -160,6 +160,10 @@ void TankPhysicsComponent::receive(CapEngine::GameObject &in_object,
             ->addObject(
                 makeProjectile(in_object.getObjectID(), position,
                                in_object.getOrientation().normalize() * speed));
+
+        // play sound
+        assert(CapEngine::Locator::assetManager != nullptr);
+        CapEngine::Locator::assetManager->playSound(m_soundId);
     }
 }
 

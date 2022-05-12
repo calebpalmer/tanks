@@ -6,7 +6,7 @@ include(GNUInstallDirs)
 #set( CMAKE_VERBOSE_MAKEFILE on )
 
 add_subdirectory(capengine)
-add_subdirectory(supportfiles)
+#add_subdirectory(supportfiles)
 
 if (MSVC)
   add_compile_options(/W4)
@@ -54,20 +54,27 @@ add_executable(tanks
 
 target_link_libraries(tanks capengine)
 
-file(COPY assets/res DESTINATION ${CMAKE_BINARY_DIR}/bin)
-file(COPY supportfiles/assets.xml DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
-file(COPY supportfiles/scenes.json DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
+# file(COPY assets/res DESTINATION ${CMAKE_BINARY_DIR}/bin)
+# file(COPY supportfiles/assets.xml DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
+# file(COPY supportfiles/scenes.json DESTINATION ${CMAKE_BINARY_DIR}/bin/res)
 install(DIRECTORY assets/res/images DESTINATION ./res)
 
+# # add target for support files
+# file(GLOB ConfigFiles ${CMAKE_SOURCE_DIR}/assets/res/* ${CMAKE_SOURCE_DIR}/supportfiles/*)
+# add_custom_target(copy)
+# foreach(ConfigFile ${ConfigFiles})
+#   add_custom_command(TARGET copy POST_BUILD
+#		     COMMAND ${CMAKE_COMMAND} -E
+#		     copy ${ConfigFile} ${CMAKE_BINARY_DIR}/bin/res)
+# endforeach()
+# add_dependencies(tanks copy)
+
 # add target for support files
-file(GLOB ConfigFiles ${CMAKE_SOURCE_DIR}/assets/res/* ${CMAKE_SOURCE_DIR}/supportfiles/*)
-add_custom_target(copy)
-foreach(ConfigFile ${ConfigFiles})
-  add_custom_command(TARGET copy POST_BUILD
-		     COMMAND ${CMAKE_COMMAND} -E
-		     copy ${ConfigFile} ${CMAKE_BINARY_DIR}/bin/res)
-endforeach()
-add_dependencies(tanks copy)
+add_custom_target(tanks-supportfiles)
+add_custom_command(TARGET tanks-supportfiles POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/supportfiles/res ${CMAKE_CURRENT_BINARY_DIR}/bin/res)
+add_dependencies(tanks tanks-supportfiles)
+
 
 
 install(
