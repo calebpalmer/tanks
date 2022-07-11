@@ -4,6 +4,7 @@
 #include "capengine/CapEngine.h"
 #include "capengine/game_management.h"
 #include "capengine/gameobject.h"
+#include "capengine/gamestate.h"
 #include "capengine/locator.h"
 #include "gameevents.h"
 #include "gameoverstate.h"
@@ -24,23 +25,19 @@
 #include <sstream>
 #include <string>
 
-namespace Tanks
-{
+namespace Tanks {
 
-int Game::start()
-{
+int Game::start() {
     try {
         std::cout << "Tanks!" << std::endl;
 
         // set up the window
         const bool isFullScreen = false;
 
-        CapEngine::WindowParams windowParams{
-            "tanks", 1280, 720, 32, isFullScreen, false, false, false, "main"};
+        CapEngine::WindowParams windowParams{"tanks", 1280, 720, 32, isFullScreen, false, false, false, "main"};
 
         m_windowId = CapEngine::init(windowParams);
-        CapEngine::Locator::videoManager->setWindowLogicalResolution(m_windowId,
-                                                                     600, 400);
+        CapEngine::Locator::videoManager->setWindowLogicalResolution(m_windowId, 600, 400);
 
         // load assets
         const std::string assetFile = "res/assets.xml";
@@ -49,26 +46,20 @@ int Game::start()
         CapEngine::setDefaultQuitEvents();
 
         // register custom components
-        CapEngine::ComponentFactory &componentFactory =
-            CapEngine::ComponentFactory::getInstance();
+        CapEngine::ComponentFactory &componentFactory = CapEngine::ComponentFactory::getInstance();
 
         Tanks::GraphicsComponent::registerConstructor(componentFactory);
         Tanks::PlayerInputComponent::registerConstructor(componentFactory);
         Tanks::TankPhysicsComponent::registerConstructor(componentFactory);
-        Tanks::ProjectilePhysicsComponent::registerConstructor(
-            componentFactory);
+        Tanks::ProjectilePhysicsComponent::registerConstructor(componentFactory);
         Tanks::PlayerComponent::registerConstructor(componentFactory);
 
         // register for events
-        m_gameEventsConnection =
-            CapEngine::Locator::eventSubscriber->m_gameEventSignal.connect(
-                [this](const CapEngine::GameEvent &in_gameEvent) {
-                    this->handleGameEvent(in_gameEvent);
-                });
+        m_gameEventsConnection = CapEngine::Locator::eventSubscriber->m_gameEventSignal.connect(
+            [this](const CapEngine::GameEvent &in_gameEvent) { this->handleGameEvent(in_gameEvent); });
 
         // add initial state and start loop
-        auto pStartMenuState =
-            std::make_unique<Tanks::StartMenuState>(m_windowId);
+        auto pStartMenuState = std::make_unique<Tanks::StartMenuState>(m_windowId);
         CapEngine::startLoop(std::move(pStartMenuState));
 
         return EXIT_SUCCESS;
@@ -85,17 +76,14 @@ int Game::start()
     }
 }
 
-void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
-{
+void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent) {
     // start menu selection
-    if (auto menuSelectionEvent =
-            dynamic_cast<const MenuSelectionEvent *>(&in_gameEvent);
+    if (auto menuSelectionEvent = dynamic_cast<const MenuSelectionEvent *>(&in_gameEvent);
         menuSelectionEvent != nullptr) {
         std::cout << "MenuSelectionEvent received" << std::endl;
 
         // start game
-        if (menuSelectionEvent->m_selection ==
-            MenuSelectionEvent::MenuSelection::StartGame) {
+        if (menuSelectionEvent->m_selection == MenuSelectionEvent::MenuSelection::StartGame) {
             startGame();
         }
         // quit game
@@ -106,8 +94,7 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
     }
 
     // pause
-    else if (auto pauseEvent = dynamic_cast<const PauseEvent *>(&in_gameEvent);
-             pauseEvent != nullptr) {
+    else if (auto pauseEvent = dynamic_cast<const PauseEvent *>(&in_gameEvent); pauseEvent != nullptr) {
         std::cout << "Pause Event received" << std::endl;
 
         if (pauseEvent->m_pause) {
@@ -119,29 +106,31 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
         }
     }
 
-    // game state event changed
-    else if (auto gameStateChangedEvent =
-                 dynamic_cast<const CapEngine::GameObjectStateChangedEvent *>(
-                     &in_gameEvent);
-             gameStateChangedEvent != nullptr) {
-        // get the metadata and see if it's a player object
-        CapEngine::GameObject::Metadata const &metadata =
-            gameStateChangedEvent->m_object->metadata();
+    // game object state event changed
+    else if (auto gameobjectStateChangedEvent =
+                 dynamic_cast<const CapEngine::GameObjectStateChangedEvent *>(&in_gameEvent);
+             gameobjectStateChangedEvent != nullptr) {
 
-        if (metadata.find("player") == metadata.end()) {
-            return; // not a player, who cares.
+        if (gameobjectStateChangedEvent->m_stateBefore != CapEngine::GameObject::ObjectState::Dead &&
+            gameobjectStateChangedEvent->m_stateAfter == CapEngine::GameObject::ObjectState::Dead) {
+
+            // get the metadata and see if it's a player object
+            CapEngine::GameObject::Metadata const &metadata = gameobjectStateChangedEvent->m_object->metadata();
+
+            if (metadata.find("player") == metadata.end()) {
+                return; // not a player, who cares.
+            }
+
+            CapEngine::MetadataType player = metadata.at("player");
+            const int playerNumber = std::get<int>(player);
+
+            int winner = 1;
+            if (playerNumber == 1) {
+                winner = 2;
+            }
+
+            CapEngine::switchState(std::make_shared<GameOverState>(m_windowId, winner));
         }
-
-        CapEngine::MetadataType player = metadata.at("player");
-        const int playerNumber = std::get<int>(player);
-
-        int winner = 1;
-        if (playerNumber == 1) {
-            winner = 2;
-        }
-
-        CapEngine::switchState(
-            std::make_shared<GameOverState>(m_windowId, winner));
     }
 
     else {
@@ -149,8 +138,7 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent)
     }
 }
 
-void Game::startGame()
-{
+void Game::startGame() {
     // load the scenes
     const std::string sceneFile = "res/scenes.json";
     std::ifstream stream(sceneFile);
@@ -158,8 +146,7 @@ void Game::startGame()
 
     const std::string sceneId = "demo";
 
-    auto tankSceneState =
-        std::make_unique<TankSceneState>(scenesJson, sceneId, m_windowId);
+    auto tankSceneState = std::make_unique<TankSceneState>(scenesJson, sceneId, m_windowId);
 
     // When the state is done, pop it and return to this state
     tankSceneState->setEndSceneCB([]() { CapEngine::popState(); });
@@ -170,8 +157,7 @@ void Game::startGame()
 
 } // namespace Tanks
 
-int main()
-{
+int main() {
     Tanks::Game game;
     return game.start();
 }

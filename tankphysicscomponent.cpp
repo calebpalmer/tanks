@@ -27,21 +27,17 @@ namespace Tanks
 namespace
 {
 
-std::unique_ptr<CapEngine::GameObject>
-    makeProjectile(CapEngine::ObjectID in_parentObjectID,
-                   CapEngine::Vector in_position, CapEngine::Vector in_velocity)
-{
+std::unique_ptr<CapEngine::GameObject> makeProjectile(CapEngine::ObjectID in_parentObjectID,
+                                                      CapEngine::Vector in_position, CapEngine::Vector in_velocity) {
     auto gameObject = std::make_unique<CapEngine::GameObject>();
 
     gameObject->setParentObjectID(in_parentObjectID);
     gameObject->setPosition(in_position);
     gameObject->setVelocity(in_velocity);
 
-    gameObject->addComponent(
-        std::make_unique<ProjectilePhysicsComponent>(2, 2, in_velocity));
+    gameObject->addComponent(std::make_unique<ProjectilePhysicsComponent>(2, 2, in_velocity));
 
-    gameObject->addComponent(std::make_unique<CapEngine::PlaceHolderGraphics>(
-        2, 2, CapEngine::Colour{255, 0, 0, 255}));
+    gameObject->addComponent(std::make_unique<CapEngine::PlaceHolderGraphics>(2, 2, CapEngine::Colour{255, 0, 0, 255}));
 
     return gameObject;
 }
@@ -49,9 +45,7 @@ std::unique_ptr<CapEngine::GameObject>
 } // namespace
 
 //!  Constructor.
-TankPhysicsComponent::TankPhysicsComponent(
-    std::optional<CapEngine::Vector> in_projectileOffset)
-{
+TankPhysicsComponent::TankPhysicsComponent(std::optional<CapEngine::Vector> in_projectileOffset) {
     if (in_projectileOffset)
         m_projectileOffset = *in_projectileOffset;
 }
@@ -63,30 +57,24 @@ TankPhysicsComponent::TankPhysicsComponent(
  \return
    The component.
 */
-std::unique_ptr<TankPhysicsComponent>
-    TankPhysicsComponent::makeComponent(const jsoncons::json &in_json)
-{
+std::unique_ptr<TankPhysicsComponent> TankPhysicsComponent::makeComponent(const jsoncons::json &in_json) {
     try {
-        assert(in_json[CapEngine::Schema::Components::kComponentSubType] ==
-               kType);
+        assert(in_json[CapEngine::Schema::Components::kComponentSubType] == kType);
 
         auto projectileOffset = CapEngine::Vector{0.0, 0.0, 0.0};
         if (in_json.has_key(kProjectileOffsetProperty))
-            projectileOffset = CapEngine::JSONUtils::readVector(
-                in_json[kProjectileOffsetProperty]);
+            projectileOffset = CapEngine::JSONUtils::readVector(in_json[kProjectileOffsetProperty]);
 
         return std::make_unique<TankPhysicsComponent>(projectileOffset);
 
     } catch (const jsoncons::json_exception &e) {
-        throw CapEngine::ComponentCreationException(
-            CapEngine::ComponentType::Physics, kType, in_json,
-            boost::diagnostic_information(e));
+        throw CapEngine::ComponentCreationException(CapEngine::ComponentType::Physics, kType, in_json,
+                                                    boost::diagnostic_information(e));
     }
 }
 
 //! \copydoc Component::clone
-std::unique_ptr<CapEngine::Component> TankPhysicsComponent::clone() const
-{
+std::unique_ptr<CapEngine::Component> TankPhysicsComponent::clone() const {
     return std::make_unique<TankPhysicsComponent>(*this);
 }
 
@@ -116,29 +104,19 @@ void TankPhysicsComponent::update(CapEngine::GameObject &object,
  \param in_factory
    The factory.
 */
-void TankPhysicsComponent::registerConstructor(
-    CapEngine::ComponentFactory &in_factory)
-{
+void TankPhysicsComponent::registerConstructor(CapEngine::ComponentFactory &in_factory) {
     in_factory.registerComponentType(
-        CapEngine::ComponentUtils::componentTypeToString(
-            CapEngine::ComponentType::Physics),
-        kType, makeComponent);
+        CapEngine::ComponentUtils::componentTypeToString(CapEngine::ComponentType::Physics), kType, makeComponent);
 }
 
 //! \copydoc Component::receive
-void TankPhysicsComponent::receive(CapEngine::GameObject &in_object,
-                                   int /*in_messageId*/,
-                                   const std::string &in_message)
-{
+void TankPhysicsComponent::receive(CapEngine::GameObject &in_object, int /*in_messageId*/,
+                                   const std::string &in_message) {
     if (in_message == "Fire") {
-        auto maybeObjectManager = CapEngine::Locator::locate(
-            CapEngine::ObjectManager::kObjectManagerLocatorId);
-        CAP_THROW_ASSERT(maybeObjectManager.has_value(),
-                         "ObjectManager not found.");
+        auto maybeObjectManager = CapEngine::Locator::locate(CapEngine::ObjectManager::kObjectManagerLocatorId);
+        CAP_THROW_ASSERT(maybeObjectManager.has_value(), "ObjectManager not found.");
 
-        auto *objectManager =
-            std::any_cast<std::shared_ptr<CapEngine::ObjectManager>>(
-                &maybeObjectManager);
+        auto *objectManager = std::any_cast<std::shared_ptr<CapEngine::ObjectManager>>(&maybeObjectManager);
         CAP_THROW_ASSERT(objectManager != nullptr, "ObjectManager not found.");
 
         const auto speed = double{200};
@@ -147,19 +125,14 @@ void TankPhysicsComponent::receive(CapEngine::GameObject &in_object,
 
         // subsract 90 because default orientation is up (90)
         const auto angle = RADTODEG(in_object.getOrientation().angle2d()) - 90;
-        const auto translationMatrix =
-            CapEngine::Matrix::createTranslationMatrix(objectPosition.getX(),
-                                                       objectPosition.getY(),
-                                                       objectPosition.getZ());
-        const auto rotationMatrix =
-            CapEngine::Matrix::createZRotationMatrix(angle);
-        const auto position =
-            translationMatrix * rotationMatrix * m_projectileOffset;
+        const auto translationMatrix = CapEngine::Matrix::createTranslationMatrix(
+            objectPosition.getX(), objectPosition.getY(), objectPosition.getZ());
+        const auto rotationMatrix = CapEngine::Matrix::createZRotationMatrix(angle);
+        const auto position = translationMatrix * rotationMatrix * m_projectileOffset;
 
         (*objectManager)
             ->addObject(
-                makeProjectile(in_object.getObjectID(), position,
-                               in_object.getOrientation().normalize() * speed));
+                makeProjectile(in_object.getObjectID(), position, in_object.getOrientation().normalize() * speed));
 
         // play sound
         assert(CapEngine::Locator::assetManager != nullptr);
