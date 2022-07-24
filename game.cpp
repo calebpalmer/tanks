@@ -16,12 +16,14 @@
 #include "startmenustate.h"
 #include "tankphysicscomponent.h"
 #include "tankscenestate.h"
+#include "utils.h"
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <jsoncons/json.hpp>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
 
@@ -114,18 +116,14 @@ void Game::handleGameEvent(const CapEngine::GameEvent &in_gameEvent) {
         if (gameobjectStateChangedEvent->m_stateBefore != CapEngine::GameObject::ObjectState::Dead &&
             gameobjectStateChangedEvent->m_stateAfter == CapEngine::GameObject::ObjectState::Dead) {
 
-            // get the metadata and see if it's a player object
-            CapEngine::GameObject::Metadata const &metadata = gameobjectStateChangedEvent->m_object->metadata();
-
-            if (metadata.find("player") == metadata.end()) {
-                return; // not a player, who cares.
+            std::optional<int> playerNumber = getPlayerNumber(*gameobjectStateChangedEvent->m_object);
+            if (!playerNumber) {
+                // must not be a player so ignore for now.
+                return;
             }
 
-            CapEngine::MetadataType player = metadata.at("player");
-            const int playerNumber = std::get<int>(player);
-
             int winner = 1;
-            if (playerNumber == 1) {
+            if (*playerNumber == 1) {
                 winner = 2;
             }
 

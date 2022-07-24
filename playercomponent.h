@@ -28,6 +28,8 @@ class PlayerComponent : public CapEngine::CustomComponent, public Damageable {
     static constexpr inline char kHealthProperty[] = "health";
 
   private:
+    void notifyHealth(CapEngine::GameObject const &in_object) const;
+
     int m_health = 100; //< Player health
 };
 } // namespace Tanks

@@ -7,16 +7,15 @@
 #include <boost/signals2.hpp>
 #include <boost/signals2/connection.hpp>
 
-namespace Tanks
-{
+namespace Tanks {
 
-class TankSceneState final : public CapEngine::Scene2dState
-{
+class TankSceneState final : public CapEngine::Scene2dState {
   public:
-    TankSceneState(jsoncons::json in_sceneDescriptors, std::string in_sceneId,
-                   uint32_t in_windowId);
+    TankSceneState(jsoncons::json in_sceneDescriptors, std::string in_sceneId, uint32_t in_windowId);
     ~TankSceneState() override = default;
 
+    void update(double ms) override;
+    void render() override;
     bool onLoad() override;
     bool onDestroy() override;
     bool onPause() override;

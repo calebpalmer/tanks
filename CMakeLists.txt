@@ -19,6 +19,7 @@ endif()
 add_definitions(-DUNIX -DDEBUG)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+set(CONAN_SYSTEM_INCLUDES ON)
 conan_basic_setup()
 
 include_directories(
@@ -50,6 +51,8 @@ add_executable(tanks
   gameevents.cpp
   tankscenestate.cpp
   gameoverstate.cpp
+  hud.cpp
+  utils.cpp
   )
 
 target_link_libraries(tanks capengine)
