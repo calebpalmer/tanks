@@ -88,6 +88,13 @@ bool ProjectilePhysicsComponent::handleCollision(CapEngine::CollisionType in_col
                                                  CapEngine::GameObject &in_object,
                                                  std::optional<CapEngine::GameObject *> in_otherObject,
                                                  const CapEngine::Vector &collisionLocation) {
+
+    // if the collision class is COLLISION_BITMAP
+    if (in_collisionClass == CapEngine::CollisionClass::COLLISION_BITMAP) {
+        // just set state to DEAD
+        in_object.setObjectState(CapEngine::GameObject::ObjectState::Dead);
+    }
+
     // if the other object is not the parent
     if (in_otherObject != std::nullopt && (*in_otherObject)->getObjectID() != in_object.getParentObjectID()) {
         for (auto &&component : (*in_otherObject)->getComponents()) {

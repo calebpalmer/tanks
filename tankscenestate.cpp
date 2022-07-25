@@ -21,8 +21,8 @@ const int kSoundId = 1000;
 
 void TankSceneState::startMusic() {
     // play music
-    assert(CapEngine::Locator::assetManager != nullptr);
-    m_soundId = CapEngine::Locator::assetManager->playSound(kSoundId, true);
+    // assert(CapEngine::Locator::assetManager != nullptr);
+    // m_soundId = CapEngine::Locator::assetManager->playSound(kSoundId, true);
 }
 
 void TankSceneState::stopMusic() {
