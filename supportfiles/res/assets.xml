@@ -10,6 +10,8 @@
     <!-- sprites -->
     <texture id="1000">images/tank.png</texture>
     <texture id="1001">images/tank_olivia.png</texture>
+    <texture id="1002" isAnimation="y" numFrames="10" animationTimeMs="2000">images/tank-destroy.png</texture>
+    <texture id="1003" isAnimation="y" numFrames="10" animationTimeMs="2000">images/tank-olivia-destroy.png</texture>
 
     <!-- Menu -->
     <texture id="2000">textures/logo.png</texture>

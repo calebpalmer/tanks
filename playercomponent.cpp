@@ -45,10 +45,10 @@ void PlayerComponent::update(CapEngine::GameObject &object, double timestep) {
             object.setObjectState(GameObject::ObjectState::Dying);
         }
     }
-    if (state == GameObject::ObjectState::Dying) {
-        std::cout << "egad...I dead\n";
-        object.setObjectState(GameObject::ObjectState::Dead);
-    }
+    // if (state == GameObject::ObjectState::Dying) {
+    //     std::cout << "egad...I dead\n";
+    //     object.setObjectState(GameObject::ObjectState::Dead);
+    // }
 
     this->notifyHealth(object);
 }
