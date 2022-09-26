@@ -33,8 +33,8 @@ void PlayerComponent::registerConstructor(CapEngine::ComponentFactory &in_factor
 }
 
 void PlayerComponent::damage(int damage) {
-	m_health -= damage;
-	std::cout << "Achh I been damaged.  My health is now " << m_health << "\n1";
+    m_health -= damage;
+    std::cout << "Achh I been damaged.  My health is now " << m_health << "\n";
 }
 
 void PlayerComponent::update(CapEngine::GameObject &object, double timestep) {
@@ -45,10 +45,6 @@ void PlayerComponent::update(CapEngine::GameObject &object, double timestep) {
             object.setObjectState(GameObject::ObjectState::Dying);
         }
     }
-    // if (state == GameObject::ObjectState::Dying) {
-    //     std::cout << "egad...I dead\n";
-    //     object.setObjectState(GameObject::ObjectState::Dead);
-    // }
 
     this->notifyHealth(object);
 }

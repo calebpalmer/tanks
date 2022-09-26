@@ -18,6 +18,7 @@ namespace {
 const int kAssetId = 1000;
 const int kPlayer1DeathAnimationId = 1002;
 const int kPlayer2DeathAnimationId = 1003;
+const int kDeathSound = 2001;
 } // namespace
 
 namespace Tanks {
@@ -106,6 +107,10 @@ void GraphicsComponent::registerConstructor(
 void GraphicsComponent::update(CapEngine::GameObject &in_object, double in_ms) {
     if (in_object.getObjectState() == CapEngine::GameObject::Dying && !m_deathAnimation->started()) {
         m_deathAnimation->start();
+
+        // play explision sound
+        assert(CapEngine::Locator::assetManager != nullptr);
+        CapEngine::Locator::assetManager->playSound(kDeathSound);
     }
 
     if (m_deathAnimation->started() && !m_deathAnimation->finished()) {
